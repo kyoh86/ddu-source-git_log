@@ -68,7 +68,9 @@ export class Source extends BaseSource<Params, ActionData> {
                 controller.enqueue(logs.map(parseLog));
               },
             }),
-          );
+          ).finally(() => {
+            controller.close();
+          });
       },
     });
   }

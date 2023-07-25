@@ -1,0 +1,52 @@
+*ddu-source-git_log.txt* git log source for ddu.vim
+
+Version: 0.0.1
+Author: kyoh86 <me@kyoh86.dev>
+License: MIT
+
+
+==============================================================================
+Contents ~
+                                                 *ddu-source-git_log-contents*
+
+INTRODUCTION                                 |ddu-source-git_log-introduction|
+INSTALL                                      |ddu-source-git_log-install|
+EXAMPLES                                     |ddu-source-git_log-examples|
+PARAMS                                       |ddu-source-git_log-params|
+
+
+==============================================================================
+Introduction ~
+                                             *ddu-source-git_log-introduction*
+
+ddu.vim source collects commit log by using `git log` command.
+
+
+==============================================================================
+Install ~
+                                                  *ddu-source-git_log-install*
+
+It depends on "|ddu|.vim" and "|denops.vim|".
+
+https://github.com/vim-denops/denops.vim
+https://github.com/Shougo/ddu.vim
+
+
+==============================================================================
+Examples ~
+                                                 *ddu-source-git_log-examples*
+
+>
+	" You can use this source with ddu-source-git_diff_tree
+	" TODO
+<
+
+==============================================================================
+Actions ~
+                                                  *ddu-source-git_log-actions*
+
+Currently there's no action defined.
+
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:

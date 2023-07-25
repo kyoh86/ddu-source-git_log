@@ -43,8 +43,7 @@ export class Source extends BaseSource<Params, ActionData> {
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
-            "--pretty",
-            formatLog(),
+            "--pretty=" + formatLog(),
           ],
           cwd,
           stdin: "null",

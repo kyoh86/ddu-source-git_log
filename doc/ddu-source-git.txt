@@ -1,6 +1,5 @@
 *ddu-source-git_log.txt* git log source for ddu.vim
 
-Version: 0.0.1
 Author: kyoh86 <me@kyoh86.dev>
 License: MIT
 

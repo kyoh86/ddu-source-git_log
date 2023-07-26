@@ -10,9 +10,12 @@ import { passthrough } from "../ddu-source-git_log/message.ts";
 import { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.3/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.2.0/mod.ts";
 import {
+  getreg,
+  getregtype,
   setreg,
 } from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
 import { v } from "https://deno.land/x/denops_std@v5.0.1/variable/mod.ts";
+import { batch } from "https://deno.land/x/denops_std@v5.0.1/batch/mod.ts";
 
 export type ActionData = {
   cwd: string;
@@ -67,6 +70,21 @@ function getHash(actionParams: unknown, item?: DduItem) {
   const action = item?.action as ActionData;
   return length > 0 ? action.hash.substring(0, length) : action.hash;
 }
+
+async function put(denops: Denops, hash: string, after: boolean) {
+  await batch(denops, async (denops) => {
+    const oldValue = await getreg(denops, '"');
+    const oldType = await getregtype(denops, '"');
+
+    await setreg(denops, '"', hash, "v");
+    try {
+      await denops.cmd(`normal! ""${after ? "p" : "P"}`);
+    } finally {
+      if (oldValue) {
+        await setreg(denops, '"', oldValue, oldType);
+      }
+    }
+  });
 }
 
 export class Kind extends BaseKind<Params> {
@@ -100,6 +118,30 @@ export class Kind extends BaseKind<Params> {
 
       await setreg(denops, '"', hash, "v");
       await setreg(denops, await v.get(denops, "register"), hash, "v");
+
+      return ActionFlags.None;
+    },
+
+    insert: async ({ actionParams, items, denops }) => {
+      const item = await ensureOnlyOneItem(denops, items);
+      if (!item) {
+        return ActionFlags.None;
+      }
+      const hash = getHash(actionParams, item);
+
+      await put(denops, hash, false);
+
+      return ActionFlags.None;
+    },
+
+    append: async ({ actionParams, items, denops }) => {
+      const item = await ensureOnlyOneItem(denops, items);
+      if (!item) {
+        return ActionFlags.None;
+      }
+      const hash = getHash(actionParams, item);
+
+      await put(denops, hash, true);
 
       return ActionFlags.None;
     },

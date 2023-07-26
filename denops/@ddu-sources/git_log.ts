@@ -19,7 +19,7 @@ function formatLog(): string {
     "%cN", // Commit
     "%ci", // CommitDate
     "%s", // Subject
-  ].join("%00");
+  ].join("%x00");
 }
 
 function parseLog(line: string): Item<ActionData> {

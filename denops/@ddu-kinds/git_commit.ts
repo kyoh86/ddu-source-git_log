@@ -85,6 +85,8 @@ export class Kind extends BaseKind<Params> {
       if (hard) {
         gitArgs.push("--hard");
       }
+      const hash = getHash(actionParams, item);
+      gitArgs.push(hash);
       callProcessByCommit(denops, item, gitArgs);
       return ActionFlags.None;
     },

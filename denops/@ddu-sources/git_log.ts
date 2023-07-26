@@ -22,14 +22,14 @@ function formatLog(): string {
   ].join("%x00");
 }
 
-function parseLog(line: string): Item<ActionData> {
+function parseLog(cwd: string, line: string): Item<ActionData> {
   const [hash, author, authDate, committer, commitDate, subject] = line.split(
     "\x00",
   );
   return {
     word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
     display: `${hash.substring(0, 6)} ${subject}`,
-    action: { hash, author, authDate, committer, commitDate, subject },
+    action: { cwd, hash, author, authDate, committer, commitDate, subject },
   };
 }
 
@@ -65,7 +65,7 @@ export class Source extends BaseSource<Params, ActionData> {
           .pipeTo(
             new WritableStream<string[]>({
               write: (logs: string[]) => {
-                controller.enqueue(logs.map(parseLog));
+                controller.enqueue(logs.map((line) => parseLog(cwd, line)));
               },
             }),
           ).finally(() => {

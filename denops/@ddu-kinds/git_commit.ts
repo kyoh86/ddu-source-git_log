@@ -10,8 +10,7 @@ import { passthrough } from "../ddu-source-git_log/message.ts";
 import { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.3/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.2.0/mod.ts";
 import {
-  getreg,
-  getregtype,
+  getreginfo,
   setreg,
 } from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
 import { v } from "https://deno.land/x/denops_std@v5.0.1/variable/mod.ts";
@@ -73,16 +72,13 @@ function getHash(actionParams: unknown, item?: DduItem) {
 
 async function put(denops: Denops, hash: string, after: boolean) {
   await batch(denops, async (denops) => {
-    const oldValue = await getreg(denops, '"');
-    const oldType = await getregtype(denops, '"');
+    const oldReg = await getreginfo(denops, '"');
 
     await setreg(denops, '"', hash, "v");
     try {
       await denops.cmd(`normal! ""${after ? "p" : "P"}`);
     } finally {
-      if (oldValue) {
-        await setreg(denops, '"', oldValue, oldType);
-      }
+      await setreg(denops, '"', oldReg);
     }
   });
 }

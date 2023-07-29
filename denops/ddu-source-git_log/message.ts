@@ -1,5 +1,5 @@
-import type { Denops } from "https://deno.land/x/ddu_vim@v3.4.3/deps.ts";
-import { TextLineStream } from "https://deno.land/std@0.195.0/streams/text_line_stream.ts";
+import type { Denops } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
+import { TextLineStream } from "https://deno.land/std@0.196.0/streams/text_line_stream.ts";
 import * as batch from "https://deno.land/x/denops_std@v5.0.1/batch/batch.ts";
 
 export async function echoerr(denops: Denops, msg: string) {
@@ -36,7 +36,7 @@ export class MessageStream extends WritableStream<string> {
   }
 }
 
-export function passthrough(
+export async function passthrough(
   denops: Denops,
   { status, stderr, stdout }: Deno.ChildProcess,
 ) {
@@ -48,7 +48,7 @@ export function passthrough(
         .pipeTo(new ErrorStream(denops));
     }
   });
-  stdout
+  await stdout
     .pipeThrough(new TextDecoderStream())
     .pipeThrough(new TextLineStream())
     .pipeTo(new MessageStream(denops));

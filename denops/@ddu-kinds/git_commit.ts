@@ -1,14 +1,16 @@
-import type { Denops } from "https://deno.land/x/ddu_vim@v3.4.2/deps.ts";
+import type { Denops } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
 import {
-  ActionArguments,
   ActionFlags,
   BaseKind,
+} from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
+import type {
+  Actions,
   Previewer,
-} from "https://deno.land/x/ddu_vim@v3.4.3/types.ts";
-import type { DduItem } from "https://deno.land/x/ddu_vim@v3.4.2/types.ts";
+} from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
+import type { DduItem } from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
 import { passthrough } from "../ddu-source-git_log/message.ts";
-import { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.3/base/kind.ts";
-import { ensure, is } from "https://deno.land/x/unknownutil@v3.2.0/mod.ts";
+import { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.4/base/kind.ts";
+import { ensure, is } from "https://deno.land/x/unknownutil@v3.4.0/mod.ts";
 import {
   getreginfo,
   setreg,
@@ -40,7 +42,7 @@ async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
   return items[0];
 }
 
-function callProcessByCommit(
+async function callProcessByCommit(
   denops: Denops,
   item: DduItem,
   subargs: string[],
@@ -50,7 +52,7 @@ function callProcessByCommit(
     ...subargs,
     action.hash,
   ];
-  passthrough(
+  await passthrough(
     denops,
     new Deno.Command("git", {
       args,
@@ -84,10 +86,7 @@ async function put(denops: Denops, hash: string, after: boolean) {
 }
 
 export class Kind extends BaseKind<Params> {
-  actions: Record<
-    string,
-    (args: ActionArguments<Params>) => Promise<ActionFlags>
-  > = {
+  override actions: Actions<Params> = {
     reset: async ({ actionParams, items, denops }) => {
       const item = await ensureOnlyOneItem(denops, items);
       if (!item) {
@@ -101,7 +100,7 @@ export class Kind extends BaseKind<Params> {
       }
       const hash = getHash(actionParams, item);
       gitArgs.push(hash);
-      callProcessByCommit(denops, item, gitArgs);
+      await callProcessByCommit(denops, item, gitArgs);
       return ActionFlags.None;
     },
 

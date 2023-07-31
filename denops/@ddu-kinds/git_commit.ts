@@ -42,16 +42,12 @@ async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
   return items[0];
 }
 
-async function callProcessByCommit(
+async function callGit(
   denops: Denops,
   item: DduItem,
-  subargs: string[],
+  args: string[],
 ) {
   const action = item.action as ActionData;
-  const args = [
-    ...subargs,
-    action.hash,
-  ];
   await passthrough(
     denops,
     new Deno.Command("git", {
@@ -100,7 +96,7 @@ export class Kind extends BaseKind<Params> {
       }
       const hash = getHash(actionParams, item);
       gitArgs.push(hash);
-      await callProcessByCommit(denops, item, gitArgs);
+      await callGit(denops, item, gitArgs);
       return ActionFlags.None;
     },
 

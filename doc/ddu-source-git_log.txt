@@ -1,0 +1,105 @@
+*ddu-source-git_log.txt* git log source for ddu.vim
+
+Author: kyoh86 <me@kyoh86.dev>
+License: MIT
+
+
+==============================================================================
+Contents ~
+                                                 *ddu-source-git_log-contents*
+
+Introduction                                 |ddu-source-git_log-introduction|
+Install                                      |ddu-source-git_log-install|
+Examples                                     |ddu-source-git_log-examples|
+Source Params                                |ddu-source-git_log-params|
+Actions                                      |ddu-kind-git_commit-actions|
+
+
+==============================================================================
+Introduction ~
+                                             *ddu-source-git_log-introduction*
+
+ddu.vim source collecting commit log by `git log` command.
+
+This source generates items for a kind "git_commit".
+A handler for the kind "git_commit" is included in this plugin; see 
+|ddu-kind-git_commit|.
+
+
+==============================================================================
+Install ~
+                                                  *ddu-source-git_log-install*
+
+It depends on "|ddu|.vim" and "|denops.vim|".
+
+https://github.com/vim-denops/denops.vim
+https://github.com/Shougo/ddu.vim
+
+
+==============================================================================
+Examples ~
+                                                 *ddu-source-git_log-examples*
+
+>
+	call ddu#start(#{
+	    \     sources: [#{
+	    \         name: "git_log"
+	    \     }]
+	    \ } )
+<
+
+You can use with ddu-source-git_diff_tree to source diffs in the commit.
+
+>
+	function s:files(args)
+	    call ddu#start(#{
+	        \     name: args.options.name,
+	        \     push: v:true,
+	        \     sources: [#{
+	        \         name: 'git_diff_tree',
+	        \         params: #{
+	        \             commitHash: args.items[0].action.hash,
+	        \         }
+	        \     }]
+	        \ })
+	endfunction
+
+	call ddu#custom#action("kind", "git_commit", "files" s:files)
+<
+
+==============================================================================
+Source Params ~
+                                                   *ddu-source-git_log-params*
+
+cwd
+	(string)
+	Get commit logs as if git is called in the path instead of the current
+	working directory (like `git -C`).
+
+
+==============================================================================
+Actions ~
+                                                         *ddu-kind-git_commit*
+                                                 *ddu-kind-git_commit-actions*
+
+yank
+	Yank a hash of the commit to |v:register|.
+
+insert
+	Insert a hash of the commit before the cursor.
+
+append
+	Insert a hash of the commit after the cursor.
+
+reset
+	Reset current HEAD to the specified commit state.
+
+	Parameter:
+
+	hard
+		(boolean)
+		Resets the index and working tree.
+
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:

@@ -44,7 +44,7 @@ async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
 
 function getHash(actionParams: unknown, item?: DduItem) {
   const params = ensure(actionParams, is.Record);
-  const length = ("length" in params) ? ensure(params.hard, is.Number) : 0;
+  const length = ("length" in params) ? ensure(params.length, is.Number) : 0;
 
   const action = item?.action as ActionData;
   return length > 0 ? action.hash.substring(0, length) : action.hash;

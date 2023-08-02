@@ -8,8 +8,8 @@ import type {
   Previewer,
 } from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
-import { passthrough } from "../ddu-source-git_log/message.ts";
-import { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.4/base/kind.ts";
+import { pipe } from "../ddu-source-git_log/message.ts";
+import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.4.4/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.4.0/mod.ts";
 import {
   getreginfo,
@@ -42,24 +42,6 @@ async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
   return items[0];
 }
 
-async function callGit(
-  denops: Denops,
-  item: DduItem,
-  args: string[],
-) {
-  const action = item.action as ActionData;
-  await passthrough(
-    denops,
-    new Deno.Command("git", {
-      args,
-      cwd: action.cwd,
-      stdin: "null",
-      stderr: "piped",
-      stdout: "piped",
-    }).spawn(),
-  );
-}
-
 function getHash(actionParams: unknown, item?: DduItem) {
   const params = ensure(actionParams, is.Record);
   const length = ("length" in params) ? ensure(params.hard, is.Number) : 0;
@@ -90,13 +72,14 @@ export class Kind extends BaseKind<Params> {
       }
       const params = ensure(actionParams, is.Record);
       const hard = ("hard" in params) && ensure(params.hard, is.Boolean);
-      const gitArgs = ["reset"];
+      const args = ["reset"];
       if (hard) {
-        gitArgs.push("--hard");
+        args.push("--hard");
       }
-      const hash = getHash(actionParams, item);
-      gitArgs.push(hash);
-      await callGit(denops, item, gitArgs);
+      const hash = getHash({}, item);
+      args.push(hash);
+      const { cwd } = item.action as ActionData;
+      await pipe(denops, "git", { args, cwd });
       return ActionFlags.None;
     },
 

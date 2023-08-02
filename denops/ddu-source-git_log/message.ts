@@ -36,10 +36,17 @@ export class MessageStream extends WritableStream<string> {
   }
 }
 
-export async function passthrough(
+export async function pipe(
   denops: Denops,
-  { status, stderr, stdout }: Deno.ChildProcess,
+  command: string | URL,
+  options?: Omit<Deno.CommandOptions, "stdin" | "stderr" | "stdout">,
 ) {
+  const { status, stderr, stdout } = new Deno.Command(command, {
+    ...options,
+    stdin: "null",
+    stderr: "piped",
+    stdout: "piped",
+  }).spawn();
   status.then((stat) => {
     if (!stat.success) {
       stderr

@@ -17,6 +17,7 @@ import {
 } from "https://deno.land/x/denops_std@v5.0.1/function/mod.ts";
 import { v } from "https://deno.land/x/denops_std@v5.0.1/variable/mod.ts";
 import { batch } from "https://deno.land/x/denops_std@v5.0.1/batch/mod.ts";
+import { fn } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
 
 export type ActionData = {
   cwd: string;
@@ -80,6 +81,22 @@ export class Kind extends BaseKind<Params> {
       args.push(hash);
       const { cwd } = item.action as ActionData;
       await pipe(denops, "git", { args, cwd });
+      return ActionFlags.None;
+    },
+
+    createBranch: async ({ items, denops }) => {
+      const item = await ensureOnlyOneItem(denops, items);
+      if (!item) {
+        return ActionFlags.None;
+      }
+
+      const name = await fn.input(denops, "New branch name:");
+      const hash = getHash({}, item);
+      const { cwd } = item.action as ActionData;
+      await pipe(denops, "git", {
+        args: ["checkout", "-b", name, hash],
+        cwd,
+      });
       return ActionFlags.None;
     },
 

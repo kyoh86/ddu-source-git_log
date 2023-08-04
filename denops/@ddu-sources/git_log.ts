@@ -9,6 +9,7 @@ import { ErrorStream } from "../ddu-source-git_log/message.ts";
 
 type Params = {
   cwd?: string;
+  args?: string[];
 };
 
 function formatLog(): string {
@@ -40,10 +41,12 @@ export class Source extends BaseSource<Params, ActionData> {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
+        const args = sourceParams.args ?? [];
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
             "--pretty=" + formatLog(),
+            ...args,
           ],
           cwd,
           stdin: "null",

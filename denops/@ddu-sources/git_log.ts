@@ -51,6 +51,7 @@ function parseLog(cwd: string, line: string): Item<ActionData> {
       kind: "git_log_graph",
       word: "",
       display: `${graph}`,
+      action,
     };
   }
   return {

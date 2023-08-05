@@ -25,10 +25,16 @@ function formatLog(): string {
 }
 
 function parseLog(cwd: string, line: string): Item<ActionData> {
-  const [graph, hash, author, authDate, committer, commitDate, subject] = line
-    .split(
-      "\x00",
-    );
+  const [
+    graph,
+    hash,
+    author,
+    authDate,
+    committer,
+    commitDate,
+    subject,
+  ] = line.split("\x00");
+
   const action = {
     cwd,
     graph,

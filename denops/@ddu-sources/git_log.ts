@@ -14,6 +14,7 @@ type Params = {
 
 function formatLog(): string {
   return [
+    "", // Graph
     "%H", // Hash
     "%aN", // Author
     "%ai", // AuthorDate
@@ -24,13 +25,32 @@ function formatLog(): string {
 }
 
 function parseLog(cwd: string, line: string): Item<ActionData> {
-  const [hash, author, authDate, committer, commitDate, subject] = line.split(
-    "\x00",
-  );
+  const [graph, hash, author, authDate, committer, commitDate, subject] = line
+    .split(
+      "\x00",
+    );
+  const action = {
+    cwd,
+    graph,
+    hash,
+    author,
+    authDate,
+    committer,
+    commitDate,
+    subject,
+  };
+  if (!hash || hash == "") {
+    return {
+      kind: "git_log_graph",
+      word: "",
+      display: `${graph}`,
+    };
+  }
   return {
+    kind: "git_commit",
     word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
-    display: `${hash.substring(0, 6)} ${subject}`,
-    action: { cwd, hash, author, authDate, committer, commitDate, subject },
+    display: `${graph} ${hash.substring(0, 6)} ${subject}`,
+    action,
   };
 }
 
@@ -45,6 +65,7 @@ export class Source extends BaseSource<Params, ActionData> {
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
+            "--graph",
             "--pretty=" + formatLog(),
             ...args,
           ],

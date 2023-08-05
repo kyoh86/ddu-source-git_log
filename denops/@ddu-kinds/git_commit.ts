@@ -21,6 +21,7 @@ import { fn } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
 
 export type ActionData = {
   cwd: string;
+  graph: string;
   hash: string;
   author: string;
   authDate: string;

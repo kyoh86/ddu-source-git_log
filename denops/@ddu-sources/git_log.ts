@@ -45,7 +45,8 @@ function parseLog(cwd: string, line: string): Item<ActionData> {
     commitDate,
     subject,
   };
-  if (!hash || hash == "") {
+
+  if (typeof hash === "undefined") {
     return {
       kind: "git_log_graph",
       word: "",

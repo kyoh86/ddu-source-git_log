@@ -141,6 +141,12 @@ export class Kind extends BaseKind<Params> {
 
   getPreviewer(args: GetPreviewerArguments): Promise<Previewer | undefined> {
     const action = args.item.action as ActionData;
+    if (typeof action.hash === "undefined") {
+      return Promise.resolve({
+        kind: "terminal",
+        cmds: ["echo", "Select line is dummy of graph only."],
+      });
+    }
     return Promise.resolve({
       kind: "terminal",
       cmds: ["git", "show", action.hash],

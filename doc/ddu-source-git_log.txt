@@ -71,11 +71,19 @@ You can use with ddu-source-git_diff_tree to source diffs in the commit.
 Source Params ~
                                                    *ddu-source-git_log-params*
 
-cwd
+cwd                                             *ddu-source-git_log-param-cwd*
 	(string)
 	Get commit logs as if git is called in the path instead of the current
 	working directory (like `git -C`).
 
+isGraph                                     *ddu-source-git_log-param-isGraph*
+	(boolean)
+
+isAll                                         *ddu-source-git_log-param-isAll*
+	(boolean)
+
+commitOrder                             *ddu-source-git_log-param-commitOrder*
+	(string)
 
 ==============================================================================
 Actions ~

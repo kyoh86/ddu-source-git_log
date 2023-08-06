@@ -25,7 +25,11 @@ function formatLog(isGraph: boolean): string {
   return baseFormat.join("%x00");
 }
 
-function parseLog(cwd: string, line: string, isGraph: boolean): Item<ActionData> {
+function parseLog(
+  cwd: string,
+  line: string,
+  isGraph: boolean,
+): Item<ActionData> {
   let graph!: string;
   let hash: string;
   let author: string;
@@ -125,7 +129,9 @@ export class Source extends BaseSource<Params, ActionData> {
           .pipeTo(
             new WritableStream<string[]>({
               write: (logs: string[]) => {
-                controller.enqueue(logs.map((line) => parseLog(cwd, line, isGraph)));
+                controller.enqueue(
+                  logs.map((line) => parseLog(cwd, line, isGraph)),
+                );
               },
             }),
           ).finally(() => {

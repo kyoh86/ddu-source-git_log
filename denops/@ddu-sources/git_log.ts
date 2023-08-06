@@ -12,7 +12,7 @@ type Params = {
   args?: string[];
 };
 
-function formatLog(args: string[]): string {
+function formatLog(isGraph: boolean): string {
   const baseFormat = [
     "%H", // Hash
     "%aN", // Author
@@ -21,22 +21,39 @@ function formatLog(args: string[]): string {
     "%ci", // CommitDate
     "%s", // Subject
   ];
-  if (args.includes("--graph")) {
-    return ["", ...baseFormat].join("%x00");
-  }
+  if (isGraph) return ["", ...baseFormat].join("%x00");
   return baseFormat.join("%x00");
 }
 
-function parseLog(cwd: string, line: string): Item<ActionData> {
-  const [
-    graph,
-    hash,
-    author,
-    authDate,
-    committer,
-    commitDate,
-    subject,
-  ] = line.split("\x00");
+function parseLog(cwd: string, line: string, isGraph: boolean): Item<ActionData> {
+  let graph!: string;
+  let hash: string;
+  let author: string;
+  let authDate: string;
+  let committer: string;
+  let commitDate: string;
+  let subject: string;
+
+  if (isGraph) {
+    [
+      graph,
+      hash,
+      author,
+      authDate,
+      committer,
+      commitDate,
+      subject,
+    ] = line.split("\x00");
+  } else {
+    [
+      hash,
+      author,
+      authDate,
+      committer,
+      commitDate,
+      subject,
+    ] = line.split("\x00");
+  }
 
   const action = {
     cwd,
@@ -57,10 +74,18 @@ function parseLog(cwd: string, line: string): Item<ActionData> {
       action,
     };
   }
+  if (isGraph) {
+    return {
+      kind: "git_commit",
+      word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
+      display: `${graph} ${hash.substring(0, 6)} ${subject}`,
+      action,
+    };
+  }
   return {
     kind: "git_commit",
     word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
-    display: `${graph} ${hash.substring(0, 6)} ${subject}`,
+    display: `${hash.substring(0, 6)} ${subject}`,
     action,
   };
 }
@@ -73,10 +98,11 @@ export class Source extends BaseSource<Params, ActionData> {
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
         const args = sourceParams.args ?? [];
+        const isGraph = args.includes("--graph");
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
-            "--pretty=" + formatLog(args),
+            "--pretty=" + formatLog(isGraph),
             ...args,
           ],
           cwd,
@@ -99,7 +125,7 @@ export class Source extends BaseSource<Params, ActionData> {
           .pipeTo(
             new WritableStream<string[]>({
               write: (logs: string[]) => {
-                controller.enqueue(logs.map((line) => parseLog(cwd, line)));
+                controller.enqueue(logs.map((line) => parseLog(cwd, line, isGraph)));
               },
             }),
           ).finally(() => {

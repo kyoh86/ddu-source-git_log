@@ -9,7 +9,13 @@ import { ErrorStream } from "../ddu-source-git_log/message.ts";
 
 type Params = {
   cwd?: string;
-  args?: string[];
+  isGraph?: boolean;
+  isAll?: boolean;
+  commitOrder?:
+    | "--date-order"
+    | "--author-date-order"
+    | "--topo-order"
+    | "--reverse";
 };
 
 function formatLog(isGraph: boolean): string {
@@ -101,8 +107,13 @@ export class Source extends BaseSource<Params, ActionData> {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
-        const args = sourceParams.args ?? [];
-        const isGraph = args.includes("--graph");
+        const isGraph = sourceParams.isGraph ?? false;
+        const isAll = sourceParams.isAll ?? false;
+        const commitOrder = sourceParams.commitOrder ?? "--topo-order";
+        let args: string[] = [commitOrder];
+        if (isGraph) args = [...args, "--graph"];
+        if (isAll) args = [...args, "--all"];
+
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",

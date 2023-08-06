@@ -12,16 +12,19 @@ type Params = {
   args?: string[];
 };
 
-function formatLog(): string {
-  return [
-    "", // Graph
+function formatLog(args: string[]): string {
+  const baseFormat = [
     "%H", // Hash
     "%aN", // Author
     "%ai", // AuthorDate
     "%cN", // Commit
     "%ci", // CommitDate
     "%s", // Subject
-  ].join("%x00");
+  ];
+  if (args.includes("--graph")) {
+    return ["", ...baseFormat].join("%x00");
+  }
+  return baseFormat.join("%x00");
 }
 
 function parseLog(cwd: string, line: string): Item<ActionData> {
@@ -73,8 +76,7 @@ export class Source extends BaseSource<Params, ActionData> {
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
-            "--graph",
-            "--pretty=" + formatLog(),
+            "--pretty=" + formatLog(args),
             ...args,
           ],
           cwd,

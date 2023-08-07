@@ -78,12 +78,25 @@ cwd                                             *ddu-source-git_log-param-cwd*
 
 isGraph                                     *ddu-source-git_log-param-isGraph*
 	(boolean)
+	`git log --graph`
+
+	Default: false
 
 isAll                                         *ddu-source-git_log-param-isAll*
 	(boolean)
+	`git log --all`
+
+	Default: false
 
 commitOrder                             *ddu-source-git_log-param-commitOrder*
 	(string)
+
+	"--date-order": `git log --date-order`
+	"--author-date-order": `git log --author-date-order`
+	"--topo-order": `git log --topo-order`
+	"--reverse": `git log --reverse`
+
+	Default: "--topo-order"
 
 ==============================================================================
 Actions ~

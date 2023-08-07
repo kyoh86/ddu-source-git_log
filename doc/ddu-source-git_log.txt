@@ -71,11 +71,48 @@ You can use with ddu-source-git_diff_tree to source diffs in the commit.
 Source Params ~
                                                    *ddu-source-git_log-params*
 
-cwd
+cwd                                             *ddu-source-git_log-param-cwd*
 	(string)
 	Get commit logs as if git is called in the path instead of the current
 	working directory (like `git -C`).
 
+	Default: |getcwd()|
+
+showGraph                                 *ddu-source-git_log-param-showGraph*
+	(boolean)
+	Draw a text-based graphical representation of the commit history on
+	the left hand side of the output.
+	NOTE: `git log --graph` of same.
+
+	Default: false
+
+showAll                                     *ddu-source-git_log-param-showAll*
+	(boolean)
+	Pretend as if all the refs in refs/, along with HEAD, are listed
+	on the command line as <commit>.
+	NOTE: `git log --all` of same.
+
+	Default: false
+
+showReverse                             *ddu-source-git_log-param-showReverse*
+	(boolean)
+	Output the commits shown in reverse order.
+	`git log --reverse`
+
+	Default: false
+
+
+commitOrder                             *ddu-source-git_log-param-commitOrder*
+	(string)
+	Specifies the sorting order of commits.
+	Check 'Commit Ordering' in `man git-log` for details on the options
+	you can specify.
+
+	"--date-order": `git log --date-order`
+	"--author-date-order": `git log --author-date-order`
+	"--topo-order": `git log --topo-order`
+
+	Default: "--topo-order"
 
 ==============================================================================
 Actions ~

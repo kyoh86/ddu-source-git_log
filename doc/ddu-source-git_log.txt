@@ -88,13 +88,19 @@ isAll                                         *ddu-source-git_log-param-isAll*
 
 	Default: false
 
+isReverse                                 *ddu-source-git_log-param-isReverse*
+	(boolean)
+	`git log --reverse`
+
+	Default: false
+
+
 commitOrder                             *ddu-source-git_log-param-commitOrder*
 	(string)
 
 	"--date-order": `git log --date-order`
 	"--author-date-order": `git log --author-date-order`
 	"--topo-order": `git log --topo-order`
-	"--reverse": `git log --reverse`
 
 	Default: "--topo-order"
 

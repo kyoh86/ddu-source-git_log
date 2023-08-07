@@ -11,11 +11,11 @@ type Params = {
   cwd?: string;
   isGraph?: boolean;
   isAll?: boolean;
+  isReverse?: boolean;
   commitOrder?:
     | "--date-order"
     | "--author-date-order"
-    | "--topo-order"
-    | "--reverse";
+    | "--topo-order";
 };
 
 function formatLog(isGraph: boolean): string {
@@ -109,10 +109,12 @@ export class Source extends BaseSource<Params, ActionData> {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
         const isGraph = sourceParams.isGraph ?? false;
         const isAll = sourceParams.isAll ?? false;
+        const isReverse = sourceParams.isReverse ?? false;
         const commitOrder = sourceParams.commitOrder ?? "--topo-order";
         let args: string[] = [commitOrder];
         if (isGraph) args = [...args, "--graph"];
         if (isAll) args = [...args, "--all"];
+        if (isReverse) args = [...args, "--reverse"];
 
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [

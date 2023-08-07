@@ -18,8 +18,9 @@ type Params = {
     | "--topo-order";
 };
 
-function formatLog(isGraph: boolean): string {
+function formatLog(): string {
   const baseFormat = [
+    "", // Graph
     "%H", // Hash
     "%aN", // Author
     "%ai", // AuthorDate
@@ -27,7 +28,6 @@ function formatLog(isGraph: boolean): string {
     "%ci", // CommitDate
     "%s", // Subject
   ];
-  if (isGraph) return ["", ...baseFormat].join("%x00");
   return baseFormat.join("%x00");
 }
 
@@ -36,16 +36,7 @@ function parseLog(
   line: string,
   isGraph: boolean,
 ): Item<ActionData> {
-  let graph!: string;
-  let hash: string;
-  let author: string;
-  let authDate: string;
-  let committer: string;
-  let commitDate: string;
-  let subject: string;
-
-  if (isGraph) {
-    [
+    const [
       graph,
       hash,
       author,
@@ -54,16 +45,6 @@ function parseLog(
       commitDate,
       subject,
     ] = line.split("\x00");
-  } else {
-    [
-      hash,
-      author,
-      authDate,
-      committer,
-      commitDate,
-      subject,
-    ] = line.split("\x00");
-  }
 
   const action = {
     cwd,
@@ -119,7 +100,7 @@ export class Source extends BaseSource<Params, ActionData> {
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
             "log",
-            "--pretty=" + formatLog(isGraph),
+            "--pretty=" + formatLog(),
             ...args,
           ],
           cwd,

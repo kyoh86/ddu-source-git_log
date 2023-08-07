@@ -102,17 +102,17 @@ showReverse                             *ddu-source-git_log-param-showReverse*
 	Default: false
 
 
-commitOrder                             *ddu-source-git_log-param-commitOrder*
+commitOrdering                       *ddu-source-git_log-param-commitOrdering*
 	(string)
 	Specifies the sorting order of commits.
 	Check 'Commit Ordering' in `man git-log` for details on the options
 	you can specify.
 
-	"--date-order": `git log --date-order`
-	"--author-date-order": `git log --author-date-order`
-	"--topo-order": `git log --topo-order`
+	"date": `git log --date-order`
+	"author-date": `git log --author-date-order`
+	"topo": `git log --topo-order`
 
-	Default: "--topo-order"
+	Default: "topo"
 
 ==============================================================================
 Actions ~

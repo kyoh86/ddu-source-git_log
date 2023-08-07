@@ -9,13 +9,10 @@ import { ErrorStream } from "../ddu-source-git_log/message.ts";
 
 type Params = {
   cwd?: string;
-  showGraph?: boolean;
-  showAll?: boolean;
-  showReverse?: boolean;
-  commitOrder?:
-    | "--date-order"
-    | "--author-date-order"
-    | "--topo-order";
+  showGraph: boolean;
+  showAll: boolean;
+  showReverse: boolean;
+  commitOrdering: "date" | "author-date" | "topo";
 };
 
 function formatLog(): string {
@@ -36,15 +33,15 @@ function parseLog(
   line: string,
   isGraph: boolean,
 ): Item<ActionData> {
-    const [
-      graph,
-      hash,
-      author,
-      authDate,
-      committer,
-      commitDate,
-      subject,
-    ] = line.split("\x00");
+  const [
+    graph,
+    hash,
+    author,
+    authDate,
+    committer,
+    commitDate,
+    subject,
+  ] = line.split("\x00");
 
   const action = {
     cwd,
@@ -88,11 +85,11 @@ export class Source extends BaseSource<Params, ActionData> {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
-        const showGraph = sourceParams.showGraph ?? false;
-        const showAll = sourceParams.showAll ?? false;
-        const showReverse = sourceParams.showReverse ?? false;
-        const commitOrder = sourceParams.commitOrder ?? "--topo-order";
-        let args: string[] = [commitOrder];
+        const showGraph = sourceParams.showGraph;
+        const showAll = sourceParams.showAll;
+        const showReverse = sourceParams.showReverse;
+        const commitOrder = sourceParams.commitOrdering;
+        let args: string[] = [`--${commitOrder}-order`];
         if (showGraph) args = [...args, "--graph"];
         if (showAll) args = [...args, "--all"];
         if (showReverse) args = [...args, "--reverse"];
@@ -136,6 +133,11 @@ export class Source extends BaseSource<Params, ActionData> {
   }
 
   override params(): Params {
-    return {};
+    return {
+      showGraph: false,
+      showAll: false,
+      showReverse: false,
+      commitOrdering: "topo",
+    };
   }
 }

@@ -9,9 +9,9 @@ import { ErrorStream } from "../ddu-source-git_log/message.ts";
 
 type Params = {
   cwd?: string;
-  isGraph?: boolean;
-  isAll?: boolean;
-  isReverse?: boolean;
+  showGraph?: boolean;
+  showAll?: boolean;
+  showReverse?: boolean;
   commitOrder?:
     | "--date-order"
     | "--author-date-order"
@@ -88,14 +88,14 @@ export class Source extends BaseSource<Params, ActionData> {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
-        const isGraph = sourceParams.isGraph ?? false;
-        const isAll = sourceParams.isAll ?? false;
-        const isReverse = sourceParams.isReverse ?? false;
+        const showGraph = sourceParams.showGraph ?? false;
+        const showAll = sourceParams.showAll ?? false;
+        const showReverse = sourceParams.showReverse ?? false;
         const commitOrder = sourceParams.commitOrder ?? "--topo-order";
         let args: string[] = [commitOrder];
-        if (isGraph) args = [...args, "--graph"];
-        if (isAll) args = [...args, "--all"];
-        if (isReverse) args = [...args, "--reverse"];
+        if (showGraph) args = [...args, "--graph"];
+        if (showAll) args = [...args, "--all"];
+        if (showReverse) args = [...args, "--reverse"];
 
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
@@ -124,7 +124,7 @@ export class Source extends BaseSource<Params, ActionData> {
             new WritableStream<string[]>({
               write: (logs: string[]) => {
                 controller.enqueue(
-                  logs.map((line) => parseLog(cwd, line, isGraph)),
+                  logs.map((line) => parseLog(cwd, line, showGraph)),
                 );
               },
             }),

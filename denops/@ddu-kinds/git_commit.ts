@@ -20,6 +20,7 @@ import { batch } from "https://deno.land/x/denops_std@v5.0.1/batch/mod.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
 
 export type ActionData = {
+  kind: "commit";
   cwd: string;
   graph: string;
   hash: string;
@@ -28,6 +29,9 @@ export type ActionData = {
   committer: string;
   commitDate: string;
   subject: string;
+} | {
+  kind: "graph";
+  graph: string;
 };
 
 type Params = Record<never, never>;
@@ -44,12 +48,26 @@ async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
   return items[0];
 }
 
-function getHash(actionParams: unknown, item?: DduItem) {
+async function ensureOnlyOneCommitAction(denops: Denops, items: DduItem[]) {
+  const item = await ensureOnlyOneItem(denops, items);
+  if (!item) {
+    return;
+  }
+  const action = item.action as ActionData;
+  if (action.kind == "graph") {
+    return;
+  }
+  return action;
+}
+
+function getHash(
+  actionParams: unknown,
+  actionData: ActionData & { kind: "commit" },
+) {
   const params = ensure(actionParams, is.Record);
   const length = ("length" in params) ? ensure(params.length, is.Number) : 0;
 
-  const action = item?.action as ActionData;
-  return length > 0 ? action.hash.substring(0, length) : action.hash;
+  return length > 0 ? actionData.hash.substring(0, length) : actionData.hash;
 }
 
 async function put(denops: Denops, hash: string, after: boolean) {
@@ -68,9 +86,9 @@ async function put(denops: Denops, hash: string, after: boolean) {
 export class Kind extends BaseKind<Params> {
   override actions: Actions<Params> = {
     reset: async ({ actionParams, items, denops }) => {
-      const item = await ensureOnlyOneItem(denops, items);
-      if (!item) {
-        return ActionFlags.None;
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
       }
       const params = ensure(actionParams, is.Record);
       const hard = ("hard" in params) && ensure(params.hard, is.Boolean);
@@ -78,35 +96,32 @@ export class Kind extends BaseKind<Params> {
       if (hard) {
         args.push("--hard");
       }
-      const hash = getHash({}, item);
+      const hash = getHash({}, action);
       args.push(hash);
-      const { cwd } = item.action as ActionData;
-      await pipe(denops, "git", { args, cwd });
+      await pipe(denops, "git", { args, cwd: action.cwd });
       return ActionFlags.None;
     },
 
     createBranch: async ({ items, denops }) => {
-      const item = await ensureOnlyOneItem(denops, items);
-      if (!item) {
-        return ActionFlags.None;
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
       }
-
       const name = await fn.input(denops, "New branch name:");
-      const hash = getHash({}, item);
-      const { cwd } = item.action as ActionData;
+      const hash = getHash({}, action);
       await pipe(denops, "git", {
         args: ["checkout", "-b", name, hash],
-        cwd,
+        cwd: action.cwd,
       });
       return ActionFlags.None;
     },
 
     yank: async ({ actionParams, items, denops }) => {
-      const item = await ensureOnlyOneItem(denops, items);
-      if (!item) {
-        return ActionFlags.None;
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
       }
-      const hash = getHash(actionParams, item);
+      const hash = getHash(actionParams, action);
 
       await setreg(denops, '"', hash, "v");
       await setreg(denops, await v.get(denops, "register"), hash, "v");
@@ -115,11 +130,11 @@ export class Kind extends BaseKind<Params> {
     },
 
     insert: async ({ actionParams, items, denops }) => {
-      const item = await ensureOnlyOneItem(denops, items);
-      if (!item) {
-        return ActionFlags.None;
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
       }
-      const hash = getHash(actionParams, item);
+      const hash = getHash(actionParams, action);
 
       await put(denops, hash, false);
 
@@ -127,11 +142,11 @@ export class Kind extends BaseKind<Params> {
     },
 
     append: async ({ actionParams, items, denops }) => {
-      const item = await ensureOnlyOneItem(denops, items);
-      if (!item) {
-        return ActionFlags.None;
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
       }
-      const hash = getHash(actionParams, item);
+      const hash = getHash(actionParams, action);
 
       await put(denops, hash, true);
 
@@ -141,10 +156,10 @@ export class Kind extends BaseKind<Params> {
 
   getPreviewer(args: GetPreviewerArguments): Promise<Previewer | undefined> {
     const action = args.item.action as ActionData;
-    if (typeof action.hash === "undefined") {
+    if (action.kind == "graph") {
       return Promise.resolve({
-        kind: "terminal",
-        cmds: ["echo", "Select line is dummy of graph only."],
+        kind: "nofile",
+        contents: ["Selected line is graph only."],
       });
     }
     return Promise.resolve({

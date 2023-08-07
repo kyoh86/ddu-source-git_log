@@ -28,11 +28,17 @@ function formatLog(): string {
   return baseFormat.join("%x00");
 }
 
-function parseLog(
+function parseLogAction(
   cwd: string,
   line: string,
-  isGraph: boolean,
-): Item<ActionData> {
+): ActionData {
+  const elements = line.split("\x00");
+  if (elements.length == 1) {
+    return {
+      kind: "graph",
+      graph: elements[0],
+    };
+  }
   const [
     graph,
     hash,
@@ -41,9 +47,10 @@ function parseLog(
     committer,
     commitDate,
     subject,
-  ] = line.split("\x00");
+  ] = elements;
 
-  const action = {
+  return {
+    kind: "commit",
     cwd,
     graph,
     hash,
@@ -53,27 +60,33 @@ function parseLog(
     commitDate,
     subject,
   };
+}
 
-  if (typeof hash === "undefined") {
+function parseLogItem(
+  cwd: string,
+  line: string,
+): Item<ActionData> {
+  const action = parseLogAction(cwd, line);
+  if (action.kind == "graph") {
     return {
       kind: "git_commit",
       word: "",
-      display: `${graph}`,
+      display: `${action.graph}`,
       action,
     };
   }
-  if (isGraph) {
-    return {
-      kind: "git_commit",
-      word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
-      display: `${graph} ${hash.substring(0, 6)} ${subject}`,
-      action,
-    };
+  const displays = [];
+  if (action.graph != "") {
+    displays.push(action.graph);
   }
+  displays.push(action.hash.substring(0, 6));
+  displays.push(action.subject);
   return {
     kind: "git_commit",
-    word: `${hash.substring(0, 6)} ${subject} by ${author}(${committer})`,
-    display: `${hash.substring(0, 6)} ${subject}`,
+    word: `${
+      action.hash.substring(0, 6)
+    } ${action.subject} by ${action.author}(${action.committer})`,
+    display: displays.join(" "),
     action,
   };
 }
@@ -85,14 +98,10 @@ export class Source extends BaseSource<Params, ActionData> {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
         const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
-        const showGraph = sourceParams.showGraph;
-        const showAll = sourceParams.showAll;
-        const showReverse = sourceParams.showReverse;
-        const commitOrder = sourceParams.commitOrdering;
-        let args: string[] = [`--${commitOrder}-order`];
-        if (showGraph) args = [...args, "--graph"];
-        if (showAll) args = [...args, "--all"];
-        if (showReverse) args = [...args, "--reverse"];
+        const args: string[] = [`--${sourceParams.commitOrdering}-order`];
+        if (sourceParams.showGraph) args.push("--graph");
+        if (sourceParams.showAll) args.push("--all");
+        if (sourceParams.showReverse) args.push("--reverse");
 
         const { status, stderr, stdout } = new Deno.Command("git", {
           args: [
@@ -121,7 +130,7 @@ export class Source extends BaseSource<Params, ActionData> {
             new WritableStream<string[]>({
               write: (logs: string[]) => {
                 controller.enqueue(
-                  logs.map((line) => parseLog(cwd, line, showGraph)),
+                  logs.map((line) => parseLogItem(cwd, line)),
                 );
               },
             }),

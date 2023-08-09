@@ -5,8 +5,8 @@ License: MIT
 
 
 ==============================================================================
-Contents ~
                                                  *ddu-source-git_log-contents*
+Contents ~
 
 Introduction                                 |ddu-source-git_log-introduction|
 Install                                      |ddu-source-git_log-install|
@@ -16,8 +16,8 @@ Actions                                      |ddu-kind-git_commit-actions|
 
 
 ==============================================================================
-Introduction ~
                                              *ddu-source-git_log-introduction*
+Introduction ~
 
 ddu.vim source collecting commit log by `git log` command.
 
@@ -27,8 +27,8 @@ A handler for the kind "git_commit" is included in this plugin; see
 
 
 ==============================================================================
-Install ~
                                                   *ddu-source-git_log-install*
+Install ~
 
 It depends on "|ddu|.vim" and "|denops.vim|".
 
@@ -37,8 +37,8 @@ https://github.com/Shougo/ddu.vim
 
 
 ==============================================================================
-Examples ~
                                                  *ddu-source-git_log-examples*
+Examples ~
 
 >
 	call ddu#start(#{
@@ -68,8 +68,8 @@ You can use with ddu-source-git_diff_tree to source diffs in the commit.
 <
 
 ==============================================================================
-Source Params ~
                                                    *ddu-source-git_log-params*
+Source Params ~
 
 cwd                                             *ddu-source-git_log-param-cwd*
 	(string)
@@ -114,10 +114,42 @@ commitOrdering                       *ddu-source-git_log-param-commitOrdering*
 
 	Default: "topo"
 
+startingCommits                     *ddu-source-git_log-param-startingCommits*
+	(string[])
+	The array `startingCommits` holds arguments to be directly passed to
+	the `git log` command.
+	With the array's elements, you can flexibly specify which part of the
+	commit history you wish to view and which part to exclude.
+
+	Each element in the array can represent:
+
+	1. A starting point
+		This is a commit from which the `git log` command starts to
+		traverse the commit history, following parent links to other
+		commits.
+
+	2. An exclusion point (prefixed with `^`)
+		When a commit is prefixed with `^`, it instructs the `git log`
+		command to exclude all commits that are reachable by following
+		parent links from that commit.
+
+	3. A range of commits (using the '..' notation)
+		For example, `A..B` will show commits reachable from `B`, but
+		excluding those reachable from `A`.
+
+	Example:
+
+	If you want to see commits that are in the range between `commitA`
+	and `commitB`, but excluding those reachable from `commitC`, the array
+	would be: ["commitA..commitB", "^commitC"]
+
+	See `git log --help` for details.
+
+	Default: []
+
 ==============================================================================
+                           *ddu-kind-git_commit* *ddu-kind-git_commit-actions*
 Actions ~
-                                                         *ddu-kind-git_commit*
-                                                 *ddu-kind-git_commit-actions*
 
 yank
 	Yank a hash of the commit to |v:register|.
@@ -136,6 +168,13 @@ reset
 	hard
 		(boolean)
 		Resets the index and working tree.
+
+createBranch
+	Create new branch with a selected commit as starting-point.
+
+cherryPick
+	Apply the selected commits to current working tree by
+	`git cherry-pick` .
 
 
 ==============================================================================

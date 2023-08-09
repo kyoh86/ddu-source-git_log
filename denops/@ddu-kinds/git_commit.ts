@@ -116,6 +116,24 @@ export class Kind extends BaseKind<Params> {
       return ActionFlags.None;
     },
 
+    cherryPick: async ({ items, denops }) => {
+      const action = await ensureOnlyOneCommitAction(denops, items);
+      if (!action) {
+        return ActionFlags.Persist;
+      }
+      const hashes = items
+        .map((item) => item.action as ActionData)
+        .filter((action) => action.kind == "commit")
+        .map((action) =>
+          getHash({}, action as ActionData & { kind: "commit" })
+        );
+      await pipe(denops, "git", {
+        args: ["cherry-pick", ...hashes],
+        cwd: action.cwd,
+      });
+      return ActionFlags.None;
+    },
+
     yank: async ({ actionParams, items, denops }) => {
       const action = await ensureOnlyOneCommitAction(denops, items);
       if (!action) {

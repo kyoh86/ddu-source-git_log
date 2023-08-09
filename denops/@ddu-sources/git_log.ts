@@ -13,6 +13,7 @@ type Params = {
   showAll: boolean;
   showReverse: boolean;
   commitOrdering: "date" | "author-date" | "topo";
+  revisionRange: string[];
 };
 
 function formatLog(): string {
@@ -108,6 +109,7 @@ export class Source extends BaseSource<Params, ActionData> {
             "log",
             "--pretty=" + formatLog(),
             ...args,
+            ...sourceParams.revisionRange,
           ],
           cwd,
           stdin: "null",
@@ -143,6 +145,7 @@ export class Source extends BaseSource<Params, ActionData> {
 
   override params(): Params {
     return {
+      revisionRange: [],
       showGraph: false,
       showAll: false,
       showReverse: false,

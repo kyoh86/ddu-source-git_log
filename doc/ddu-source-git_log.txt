@@ -71,10 +71,14 @@ You can use with ddu-source-git_diff_tree to source diffs in the commit.
                                                    *ddu-source-git_log-params*
 Source Params ~
 
-cwd                                             *ddu-source-git_log-param-cwd*
+                                                *ddu-source-git_log-param-cwd*
+cwd
 	(string)
 	Get commit logs as if git is called in the path instead of the current
 	working directory (like `git -C`).
+	You can set like below:
+		`expand("%:p")`: calls git from the current buffer dir.
+		`getcwd()`: calls git from the current working directory.
 
 	Default: |getcwd()|
 

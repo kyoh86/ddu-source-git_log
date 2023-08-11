@@ -1,5 +1,6 @@
 import type { GatherArguments } from "https://deno.land/x/ddu_vim@v3.4.4/base/source.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v3.4.4/deps.ts";
+import { treePath2Filename } from "https://deno.land/x/ddu_vim@v3.4.4/utils.ts";
 import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v3.4.4/types.ts";
 import { TextLineStream } from "https://deno.land/std@0.196.0/streams/text_line_stream.ts";
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.2/mod.ts";
@@ -95,10 +96,19 @@ function parseLogItem(
 export class Source extends BaseSource<Params, ActionData> {
   override kind = "git_commit";
 
-  override gather({ denops, sourceParams }: GatherArguments<Params>) {
+  override gather(
+    { denops, sourceOptions, sourceParams }: GatherArguments<Params>,
+  ) {
     return new ReadableStream<Item<ActionData>[]>({
       async start(controller) {
-        const cwd = sourceParams.cwd ?? await fn.getcwd(denops);
+        const path = treePath2Filename(sourceOptions.path);
+        if (sourceParams.cwd) {
+          console.error(
+            `WARN: "cwd" for ddu-source-git_diff_tree is deprecated. Use sourceOptions.path instead.`,
+          );
+        }
+        const cwd = sourceParams.cwd ??
+          (path && path !== "" ? path : await fn.getcwd(denops));
         const args: string[] = [`--${sourceParams.commitOrdering}-order`];
         if (sourceParams.showGraph) args.push("--graph");
         if (sourceParams.showAll) args.push("--all");

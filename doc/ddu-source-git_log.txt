@@ -25,6 +25,9 @@ This source generates items for a kind "git_commit".
 A handler for the kind "git_commit" is included in this plugin; see 
 |ddu-kind-git_commit|.
 
+This plugin calls `git` from the |current-directory| as default.
+If you want to change the path, you can use |ddu-source-option-path|.
+
 
 ==============================================================================
                                                   *ddu-source-git_log-install*
@@ -44,6 +47,17 @@ Examples ~
 	call ddu#start(#{
 	    \     sources: [#{
 	    \         name: "git_log"
+	    \     }]
+	    \ } )
+<
+
+>
+	" Use git_diff_tree source in the specified path.
+	" Call it for the current buffer for example:
+	call ddu#start(#{
+	    \     sources: [#{
+	    \         name: "git_log",
+	    \         options: #{ path: expand("%:p") }
 	    \     }]
 	    \ } )
 <
@@ -74,13 +88,7 @@ Source Params ~
                                                 *ddu-source-git_log-param-cwd*
 cwd
 	(string)
-	Get commit logs as if git is called in the path instead of the current
-	working directory (like `git -C`).
-	You can set like below:
-		`expand("%:p")`: calls git from the current buffer dir.
-		`getcwd()`: calls git from the current working directory.
-
-	Default: |getcwd()|
+	DEPRECATED. Use |ddu-source-option-path| instead.
 
 showGraph                                 *ddu-source-git_log-param-showGraph*
 	(boolean)

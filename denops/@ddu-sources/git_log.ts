@@ -104,7 +104,7 @@ export class Source extends BaseSource<Params, ActionData> {
         const path = treePath2Filename(sourceOptions.path);
         if (sourceParams.cwd) {
           console.error(
-            `WARN: "cwd" for ddu-source-git_diff_tree is deprecated. Use sourceOptions.path instead.`,
+            `WARN: "cwd" for ddu-source-git_log is deprecated. Use sourceOptions.path instead.`,
           );
         }
         const cwd = sourceParams.cwd ??

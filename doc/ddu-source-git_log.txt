@@ -12,6 +12,7 @@ Introduction                                 |ddu-source-git_log-introduction|
 Install                                      |ddu-source-git_log-install|
 Examples                                     |ddu-source-git_log-examples|
 Source Params                                |ddu-source-git_log-params|
+Action Data                                  |ddu-kind-git_commit-action-data|
 Actions                                      |ddu-kind-git_commit-actions|
 
 
@@ -158,6 +159,53 @@ startingCommits                     *ddu-source-git_log-param-startingCommits*
 	See `git log --help` for details.
 
 	Default: []
+
+==============================================================================
+                       *ddu-kind-git_commit* *ddu-kind-git_commit-action-data*
+Action Data ~
+
+This source generates action-data with properties below.
+
+kind
+	("commit" | "graph")
+	A kind of the item.
+	"commit" is the general commit log line.
+	"graph" is the item only graph line without commit.
+
+cwd
+	(string)
+	A current directory that is guessed in source.
+	This is used for call `git` to get sources.
+
+graph
+	(string)
+	Text-based graphical representation of the commit history.
+	It will be empty without |ddu-source-git_log-param-showGraph|.
+
+hash
+	(string)
+	Full commit hash.
+
+author
+	(string)
+	Commit author name.
+
+authDate
+	(string)
+	Commit auth date.
+
+committer
+	(string)
+	Committer name.
+
+commitDate
+	(string)
+	Commit date.
+
+subject
+	(string)
+	Commit message.
+
 
 ==============================================================================
                            *ddu-kind-git_commit* *ddu-kind-git_commit-actions*

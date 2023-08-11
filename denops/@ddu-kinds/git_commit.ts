@@ -78,7 +78,9 @@ async function put(denops: Denops, hash: string, after: boolean) {
     try {
       await denops.cmd(`normal! ""${after ? "p" : "P"}`);
     } finally {
-      await setreg(denops, '"', oldReg);
+      if (oldReg) {
+        await setreg(denops, '"', oldReg);
+      }
     }
   });
 }

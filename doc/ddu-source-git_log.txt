@@ -12,8 +12,8 @@ Introduction                                 |ddu-source-git_log-introduction|
 Install                                      |ddu-source-git_log-install|
 Examples                                     |ddu-source-git_log-examples|
 Source Params                                |ddu-source-git_log-params|
-Action Data                                  |ddu-kind-git_commit-action-data|
 Actions                                      |ddu-kind-git_commit-actions|
+Action Data                                  |ddu-kind-git_commit-action-data|
 
 
 ==============================================================================
@@ -161,7 +161,37 @@ startingCommits                     *ddu-source-git_log-param-startingCommits*
 	Default: []
 
 ==============================================================================
-                       *ddu-kind-git_commit* *ddu-kind-git_commit-action-data*
+                           *ddu-kind-git_commit* *ddu-kind-git_commit-actions*
+Actions ~
+
+yank
+	Yank a hash of the commit to |v:register|.
+
+insert
+	Insert a hash of the commit before the cursor.
+
+append
+	Insert a hash of the commit after the cursor.
+
+reset
+	Reset current HEAD to the specified commit state.
+
+	Parameter:
+
+	hard
+		(boolean)
+		Resets the index and working tree.
+
+createBranch
+	Create new branch with a selected commit as starting-point.
+
+cherryPick
+	Apply the selected commits to current working tree by
+	`git cherry-pick` .
+
+
+==============================================================================
+                                             *ddu-kind-git_commit-action-data*
 Action Data ~
 
 This source generates action-data with properties below.
@@ -205,36 +235,6 @@ commitDate
 subject
 	(string)
 	Commit message.
-
-
-==============================================================================
-                           *ddu-kind-git_commit* *ddu-kind-git_commit-actions*
-Actions ~
-
-yank
-	Yank a hash of the commit to |v:register|.
-
-insert
-	Insert a hash of the commit before the cursor.
-
-append
-	Insert a hash of the commit after the cursor.
-
-reset
-	Reset current HEAD to the specified commit state.
-
-	Parameter:
-
-	hard
-		(boolean)
-		Resets the index and working tree.
-
-createBranch
-	Create new branch with a selected commit as starting-point.
-
-cherryPick
-	Apply the selected commits to current working tree by
-	`git cherry-pick` .
 
 
 ==============================================================================

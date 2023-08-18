@@ -1,10 +1,16 @@
-name: Deno
+name: Deno Test
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+    paths:
+      - '**.ts'
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
+    paths:
+      - '**.ts'
 
 permissions:
   contents: read

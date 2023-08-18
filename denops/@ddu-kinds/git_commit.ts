@@ -34,7 +34,7 @@ export type ActionData = {
   graph: string;
 };
 
-type Params = Record<never, never>;
+type Params = Record<PropertyKey, never>;
 
 async function ensureOnlyOneItem(denops: Denops, items: DduItem[]) {
   if (items.length != 1) {

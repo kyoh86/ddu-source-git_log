@@ -1,4 +1,4 @@
-import type { Denops } from "https://deno.land/x/ddu_vim@v3.5.1/deps.ts";
+import type { Denops } from "https://deno.land/x/ddu_vim@v3.6.0/deps.ts";
 import { TextLineStream } from "https://deno.land/std@0.200.0/streams/text_line_stream.ts";
 import * as batch from "https://deno.land/x/denops_std@v5.0.1/batch/batch.ts";
 

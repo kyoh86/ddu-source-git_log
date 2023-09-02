@@ -10,7 +10,7 @@ import type {
 import type { DduItem } from "https://deno.land/x/ddu_vim@v3.6.0/types.ts";
 import { pipe } from "../ddu-source-git_log/message.ts";
 import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.6.0/base/kind.ts";
-import { ensure, is } from "https://deno.land/x/unknownutil@v3.4.0/mod.ts";
+import { ensure, is } from "https://deno.land/x/unknownutil@v3.6.0/mod.ts";
 import {
   getreginfo,
   setreg,

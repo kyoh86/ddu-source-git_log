@@ -32,6 +32,15 @@ jobs:
             echo EOF
           } >> $GITHUB_OUTPUT
 
+      - name: Verify formatting
+        run: deno fmt --check
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Run tests
+        run: deno test --allow-all --allow-none
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:

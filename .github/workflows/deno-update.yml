@@ -42,7 +42,7 @@ jobs:
         run: deno test --allow-all --allow-none
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           commit-message: "chore(deps): Update deno dependencies"
           title: Update Deno dependencies

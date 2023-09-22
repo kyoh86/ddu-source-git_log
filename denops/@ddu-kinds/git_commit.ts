@@ -85,95 +85,94 @@ async function put(denops: Denops, hash: string, after: boolean) {
   });
 }
 
+export const GitLogActions: Actions<Params> = {
+  reset: async ({ actionParams, items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const params = ensure(actionParams, is.Record);
+    const hard = ("hard" in params) && ensure(params.hard, is.Boolean);
+    const args = ["reset"];
+    if (hard) {
+      args.push("--hard");
+    }
+    const hash = getHash({}, action);
+    args.push(hash);
+    await pipe(denops, "git", { args, cwd: action.cwd });
+    return ActionFlags.None;
+  },
+
+  createBranch: async ({ items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const name = await fn.input(denops, "New branch name:");
+    const hash = getHash({}, action);
+    await pipe(denops, "git", {
+      args: ["checkout", "-b", name, hash],
+      cwd: action.cwd,
+    });
+    return ActionFlags.None;
+  },
+
+  cherryPick: async ({ items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const hashes = items
+      .map((item) => item.action as ActionData)
+      .filter((action) => action.kind == "commit")
+      .map((action) => getHash({}, action as ActionData & { kind: "commit" }));
+    await pipe(denops, "git", {
+      args: ["cherry-pick", ...hashes],
+      cwd: action.cwd,
+    });
+    return ActionFlags.None;
+  },
+
+  yank: async ({ actionParams, items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const hash = getHash(actionParams, action);
+
+    await setreg(denops, '"', hash, "v");
+    await setreg(denops, await v.get(denops, "register"), hash, "v");
+
+    return ActionFlags.None;
+  },
+
+  insert: async ({ actionParams, items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const hash = getHash(actionParams, action);
+
+    await put(denops, hash, false);
+
+    return ActionFlags.None;
+  },
+
+  append: async ({ actionParams, items, denops }) => {
+    const action = await ensureOnlyOneCommitAction(denops, items);
+    if (!action) {
+      return ActionFlags.Persist;
+    }
+    const hash = getHash(actionParams, action);
+
+    await put(denops, hash, true);
+
+    return ActionFlags.None;
+  },
+};
+
 export class Kind extends BaseKind<Params> {
-  override actions: Actions<Params> = {
-    reset: async ({ actionParams, items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const params = ensure(actionParams, is.Record);
-      const hard = ("hard" in params) && ensure(params.hard, is.Boolean);
-      const args = ["reset"];
-      if (hard) {
-        args.push("--hard");
-      }
-      const hash = getHash({}, action);
-      args.push(hash);
-      await pipe(denops, "git", { args, cwd: action.cwd });
-      return ActionFlags.None;
-    },
-
-    createBranch: async ({ items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const name = await fn.input(denops, "New branch name:");
-      const hash = getHash({}, action);
-      await pipe(denops, "git", {
-        args: ["checkout", "-b", name, hash],
-        cwd: action.cwd,
-      });
-      return ActionFlags.None;
-    },
-
-    cherryPick: async ({ items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const hashes = items
-        .map((item) => item.action as ActionData)
-        .filter((action) => action.kind == "commit")
-        .map((action) =>
-          getHash({}, action as ActionData & { kind: "commit" })
-        );
-      await pipe(denops, "git", {
-        args: ["cherry-pick", ...hashes],
-        cwd: action.cwd,
-      });
-      return ActionFlags.None;
-    },
-
-    yank: async ({ actionParams, items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const hash = getHash(actionParams, action);
-
-      await setreg(denops, '"', hash, "v");
-      await setreg(denops, await v.get(denops, "register"), hash, "v");
-
-      return ActionFlags.None;
-    },
-
-    insert: async ({ actionParams, items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const hash = getHash(actionParams, action);
-
-      await put(denops, hash, false);
-
-      return ActionFlags.None;
-    },
-
-    append: async ({ actionParams, items, denops }) => {
-      const action = await ensureOnlyOneCommitAction(denops, items);
-      if (!action) {
-        return ActionFlags.Persist;
-      }
-      const hash = getHash(actionParams, action);
-
-      await put(denops, hash, true);
-
-      return ActionFlags.None;
-    },
-  };
-
+  actions = GitLogActions;
   getPreviewer(args: GetPreviewerArguments): Promise<Previewer | undefined> {
     const action = args.item.action as ActionData;
     if (action.kind == "graph") {

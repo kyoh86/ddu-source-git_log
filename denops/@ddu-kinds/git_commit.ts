@@ -1,23 +1,23 @@
-import type { Denops } from "https://deno.land/x/ddu_vim@v3.6.0/deps.ts";
+import type { Denops } from "https://deno.land/x/ddu_vim@v3.8.1/deps.ts";
 import {
   ActionFlags,
   BaseKind,
-} from "https://deno.land/x/ddu_vim@v3.6.0/types.ts";
+} from "https://deno.land/x/ddu_vim@v3.8.1/types.ts";
 import type {
   Actions,
   Previewer,
-} from "https://deno.land/x/ddu_vim@v3.6.0/types.ts";
-import type { DduItem } from "https://deno.land/x/ddu_vim@v3.6.0/types.ts";
+} from "https://deno.land/x/ddu_vim@v3.8.1/types.ts";
+import type { DduItem } from "https://deno.land/x/ddu_vim@v3.8.1/types.ts";
 import { pipe } from "../ddu-source-git_log/message.ts";
-import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.6.0/base/kind.ts";
-import { ensure, is } from "https://deno.land/x/unknownutil@v3.10.0/mod.ts";
+import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.8.1/base/kind.ts";
+import { ensure, is } from "https://deno.land/x/unknownutil@v3.11.0/mod.ts";
 import {
   getreginfo,
   setreg,
-} from "https://deno.land/x/denops_std@v5.0.2/function/mod.ts";
-import { v } from "https://deno.land/x/denops_std@v5.0.2/variable/mod.ts";
-import { batch } from "https://deno.land/x/denops_std@v5.0.2/batch/mod.ts";
-import { fn } from "https://deno.land/x/ddu_vim@v3.6.0/deps.ts";
+} from "https://deno.land/x/denops_std@v5.1.0/function/mod.ts";
+import { v } from "https://deno.land/x/denops_std@v5.1.0/variable/mod.ts";
+import { batch } from "https://deno.land/x/denops_std@v5.1.0/batch/mod.ts";
+import { fn } from "https://deno.land/x/ddu_vim@v3.8.1/deps.ts";
 
 export type ActionData = {
   kind: "commit";

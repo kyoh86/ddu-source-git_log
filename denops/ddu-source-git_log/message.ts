@@ -1,6 +1,6 @@
-import type { Denops } from "https://deno.land/x/ddu_vim@v3.6.0/deps.ts";
-import { TextLineStream } from "https://deno.land/std@0.206.0/streams/text_line_stream.ts";
-import * as batch from "https://deno.land/x/denops_std@v5.0.2/batch/batch.ts";
+import type { Denops } from "https://deno.land/x/ddu_vim@v3.8.1/deps.ts";
+import { TextLineStream } from "https://deno.land/std@0.208.0/streams/text_line_stream.ts";
+import * as batch from "https://deno.land/x/denops_std@v5.1.0/batch/batch.ts";
 
 export async function echoerr(denops: Denops, msg: string) {
   await batch.batch(denops, async (denops) => {

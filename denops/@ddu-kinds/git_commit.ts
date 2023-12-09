@@ -8,15 +8,11 @@ import type {
   Previewer,
 } from "https://deno.land/x/ddu_vim@v3.8.1/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v3.8.1/types.ts";
-import { pipe } from "../ddu-source-git_log/message.ts";
+import { pipe } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/pipe.ts";
+import { yank } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/yank.ts";
+import { put } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/put.ts";
 import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.8.1/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.11.0/mod.ts";
-import {
-  getreginfo,
-  setreg,
-} from "https://deno.land/x/denops_std@v5.1.0/function/mod.ts";
-import { v } from "https://deno.land/x/denops_std@v5.1.0/variable/mod.ts";
-import { batch } from "https://deno.land/x/denops_std@v5.1.0/batch/mod.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v3.8.1/deps.ts";
 
 export type ActionData = {
@@ -68,21 +64,6 @@ function getHash(
   const length = ("length" in params) ? ensure(params.length, is.Number) : 0;
 
   return length > 0 ? actionData.hash.substring(0, length) : actionData.hash;
-}
-
-async function put(denops: Denops, hash: string, after: boolean) {
-  await batch(denops, async (denops) => {
-    const oldReg = await getreginfo(denops, '"');
-
-    await setreg(denops, '"', hash, "v");
-    try {
-      await denops.cmd(`normal! ""${after ? "p" : "P"}`);
-    } finally {
-      if (oldReg) {
-        await setreg(denops, '"', oldReg);
-      }
-    }
-  });
 }
 
 export const GitLogActions: Actions<Params> = {
@@ -138,11 +119,7 @@ export const GitLogActions: Actions<Params> = {
     if (!action) {
       return ActionFlags.Persist;
     }
-    const hash = getHash(actionParams, action);
-
-    await setreg(denops, '"', hash, "v");
-    await setreg(denops, await v.get(denops, "register"), hash, "v");
-
+    await yank(denops, getHash(actionParams, action));
     return ActionFlags.None;
   },
 
@@ -151,10 +128,7 @@ export const GitLogActions: Actions<Params> = {
     if (!action) {
       return ActionFlags.Persist;
     }
-    const hash = getHash(actionParams, action);
-
-    await put(denops, hash, false);
-
+    await put(denops, getHash(actionParams, action), false);
     return ActionFlags.None;
   },
 
@@ -163,10 +137,7 @@ export const GitLogActions: Actions<Params> = {
     if (!action) {
       return ActionFlags.Persist;
     }
-    const hash = getHash(actionParams, action);
-
-    await put(denops, hash, true);
-
+    await put(denops, getHash(actionParams, action), true);
     return ActionFlags.None;
   },
 };

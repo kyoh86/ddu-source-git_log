@@ -6,7 +6,7 @@ import { TextLineStream } from "https://deno.land/std@0.208.0/streams/text_line_
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.2/mod.ts";
 
 import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { ErrorStream } from "../ddu-source-git_log/message.ts";
+import { EchomsgStream } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/echomsg_stream.ts";
 
 type Params = {
   cwd?: string;
@@ -131,7 +131,7 @@ export class Source extends BaseSource<Params, ActionData> {
             stderr
               .pipeThrough(new TextDecoderStream())
               .pipeThrough(new TextLineStream())
-              .pipeTo(new ErrorStream(denops));
+              .pipeTo(new EchomsgStream(denops, "ErrorMsg"));
           }
         });
         stdout

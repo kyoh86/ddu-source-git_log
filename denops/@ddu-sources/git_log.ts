@@ -6,7 +6,7 @@ import { TextLineStream } from "https://deno.land/std@0.210.0/streams/text_line_
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.2/mod.ts";
 
 import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { EchomsgStream } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/echomsg_stream.ts";
+import { echoerrCommand } from "https://denopkg.com/kyoh86/denops_util@v0.0.3/command.ts";
 
 type Params = {
   cwd?: string;
@@ -114,7 +114,7 @@ export class Source extends BaseSource<Params, ActionData> {
         if (sourceParams.showAll) args.push("--all");
         if (sourceParams.showReverse) args.push("--reverse");
 
-        const { status, stderr, stdout } = new Deno.Command("git", {
+        const { wait, stdout } = echoerrCommand(denops, "git", {
           args: [
             "log",
             "--pretty=" + formatLog(),
@@ -122,33 +122,24 @@ export class Source extends BaseSource<Params, ActionData> {
             ...sourceParams.startingCommits,
           ],
           cwd,
-          stdin: "null",
-          stderr: "piped",
-          stdout: "piped",
-        }).spawn();
-        status.then((stat) => {
-          if (!stat.success) {
-            stderr
-              .pipeThrough(new TextDecoderStream())
-              .pipeThrough(new TextLineStream())
-              .pipeTo(new EchomsgStream(denops, "ErrorMsg"));
-          }
         });
-        stdout
-          .pipeThrough(new TextDecoderStream())
-          .pipeThrough(new TextLineStream())
-          .pipeThrough(new ChunkedStream({ chunkSize: 1000 }))
-          .pipeTo(
-            new WritableStream<string[]>({
-              write: (logs: string[]) => {
-                controller.enqueue(
-                  logs.map((line) => parseLogItem(cwd, line)),
-                );
-              },
+        await Promise.all([
+          wait,
+          stdout
+            .pipeThrough(new TextLineStream())
+            .pipeThrough(new ChunkedStream({ chunkSize: 1000 }))
+            .pipeTo(
+              new WritableStream<string[]>({
+                write: (logs: string[]) => {
+                  controller.enqueue(
+                    logs.map((line) => parseLogItem(cwd, line)),
+                  );
+                },
+              }),
+            ).finally(() => {
+              controller.close();
             }),
-          ).finally(() => {
-            controller.close();
-          });
+        ]);
       },
     });
   }

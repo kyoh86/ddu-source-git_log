@@ -8,9 +8,9 @@ import type {
   Previewer,
 } from "https://deno.land/x/ddu_vim@v3.9.0/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v3.9.0/types.ts";
-import { pipe } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/pipe.ts";
-import { yank } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/yank.ts";
-import { put } from "https://denopkg.com/kyoh86/denops_util@v0.0.1/put.ts";
+import { echoallCommand } from "https://denopkg.com/kyoh86/denops_util@v0.0.3/command.ts";
+import { yank } from "https://denopkg.com/kyoh86/denops_util@v0.0.3/yank.ts";
+import { put } from "https://denopkg.com/kyoh86/denops_util@v0.0.3/put.ts";
 import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.9.0/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.11.0/mod.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v3.9.0/deps.ts";
@@ -80,7 +80,7 @@ export const GitLogActions: Actions<Params> = {
     }
     const hash = getHash({}, action);
     args.push(hash);
-    await pipe(denops, "git", { args, cwd: action.cwd });
+    await echoallCommand(denops, "git", { args, cwd: action.cwd });
     return ActionFlags.None;
   },
 
@@ -91,7 +91,7 @@ export const GitLogActions: Actions<Params> = {
     }
     const name = await fn.input(denops, "New branch name:");
     const hash = getHash({}, action);
-    await pipe(denops, "git", {
+    await echoallCommand(denops, "git", {
       args: ["checkout", "-b", name, hash],
       cwd: action.cwd,
     });
@@ -107,7 +107,7 @@ export const GitLogActions: Actions<Params> = {
       .map((item) => item.action as ActionData)
       .filter((action) => action.kind == "commit")
       .map((action) => getHash({}, action as ActionData & { kind: "commit" }));
-    await pipe(denops, "git", {
+    await echoallCommand(denops, "git", {
       args: ["cherry-pick", ...hashes],
       cwd: action.cwd,
     });

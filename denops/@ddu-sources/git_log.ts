@@ -6,7 +6,7 @@ import { TextLineStream } from "https://deno.land/std@0.211.0/streams/text_line_
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.2/mod.ts";
 
 import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { echoerrCommand } from "https://denopkg.com/kyoh86/denops_util@v0.0.3/command.ts";
+import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.3/command.ts";
 
 type Params = {
   cwd?: string;

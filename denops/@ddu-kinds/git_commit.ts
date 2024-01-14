@@ -12,7 +12,7 @@ import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.5/co
 import { yank } from "https://denopkg.com/kyoh86/denops-util@v0.0.5/yank.ts";
 import { put } from "https://denopkg.com/kyoh86/denops-util@v0.0.5/put.ts";
 import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v3.9.0/base/kind.ts";
-import { ensure, is } from "https://deno.land/x/unknownutil@v3.14.0/mod.ts";
+import { ensure, is } from "https://deno.land/x/unknownutil@v3.14.1/mod.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v3.9.0/deps.ts";
 
 export type ActionData = {

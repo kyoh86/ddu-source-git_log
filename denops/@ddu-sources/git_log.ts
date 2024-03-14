@@ -6,7 +6,7 @@ import { TextLineStream } from "https://deno.land/std@0.219.1/streams/text_line_
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.4/mod.ts";
 
 import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.6/command.ts";
+import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.7/command.ts";
 
 type Params = {
   cwd?: string;
@@ -114,7 +114,7 @@ export class Source extends BaseSource<Params, ActionData> {
         if (sourceParams.showAll) args.push("--all");
         if (sourceParams.showReverse) args.push("--reverse");
 
-        const { waitErr, pipeOut, finalize } = echoerrCommand(denops, "git", {
+        const { wait, pipeOut, finalize } = echoerrCommand(denops, "git", {
           args: [
             "log",
             "--pretty=" + formatLog(),
@@ -124,22 +124,24 @@ export class Source extends BaseSource<Params, ActionData> {
           cwd,
         });
 
-        await pipeOut
-          .pipeThrough(new TextLineStream())
-          .pipeThrough(new ChunkedStream({ chunkSize: 1000 }))
-          .pipeTo(
-            new WritableStream<string[]>({
-              write: (logs: string[]) => {
-                controller.enqueue(
-                  logs.map((line) => parseLogItem(cwd, line)),
-                );
-              },
-            }),
-          ).finally(async () => {
-            await waitErr;
-            await finalize();
-            controller.close();
-          });
+        await Promise.all([
+          pipeOut
+            .pipeThrough(new TextLineStream())
+            .pipeThrough(new ChunkedStream({ chunkSize: 1000 }))
+            .pipeTo(
+              new WritableStream<string[]>({
+                write: (logs: string[]) => {
+                  controller.enqueue(
+                    logs.map((line) => parseLogItem(cwd, line)),
+                  );
+                },
+              }),
+            ),
+          wait,
+        ]).finally(async () => {
+          await finalize();
+          controller.close();
+        });
       },
     });
   }

@@ -8,9 +8,9 @@ import type {
   Previewer,
 } from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
-import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/command.ts";
-import { yank } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/yank.ts";
-import { put } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/put.ts";
+import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.11/command.ts";
+import { yank } from "https://denopkg.com/kyoh86/denops-util@v0.0.11/yank.ts";
+import { put } from "https://denopkg.com/kyoh86/denops-util@v0.0.11/put.ts";
 import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v4.0.0/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.18.0/mod.ts";
 import { fn } from "https://deno.land/x/ddu_vim@v4.0.0/deps.ts";

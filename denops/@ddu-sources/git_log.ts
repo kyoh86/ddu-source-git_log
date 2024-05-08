@@ -2,11 +2,11 @@ import type { GatherArguments } from "https://deno.land/x/ddu_vim@v4.0.0/base/so
 import { fn } from "https://deno.land/x/ddu_vim@v4.0.0/deps.ts";
 import { treePath2Filename } from "https://deno.land/x/ddu_vim@v4.0.0/utils.ts";
 import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
-import { TextLineStream } from "https://deno.land/std@0.223.0/streams/text_line_stream.ts";
+import { TextLineStream } from "https://deno.land/std@0.224.0/streams/text_line_stream.ts";
 import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.4/mod.ts";
 
 import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/command.ts";
+import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.11/command.ts";
 
 type Params = {
   cwd?: string;

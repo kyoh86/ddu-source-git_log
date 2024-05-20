@@ -1,19 +1,17 @@
 import type { Denops } from "https://deno.land/x/ddu_vim@v4.0.0/deps.ts";
 import {
   ActionFlags,
+  type Actions,
   BaseKind,
-} from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
-import type {
-  Actions,
-  Previewer,
-} from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
+  type Previewer,
+} from "https://deno.land/x/ddu_vim@v4.1.0/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v4.0.0/types.ts";
-import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/command.ts";
-import { yank } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/yank.ts";
-import { put } from "https://denopkg.com/kyoh86/denops-util@v0.0.10/put.ts";
-import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v4.0.0/base/kind.ts";
-import { ensure, is } from "https://deno.land/x/unknownutil@v3.18.0/mod.ts";
-import { fn } from "https://deno.land/x/ddu_vim@v4.0.0/deps.ts";
+import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@master/command.ts";
+import { yank } from "https://denopkg.com/kyoh86/denops-util@master/yank.ts";
+import { put } from "https://denopkg.com/kyoh86/denops-util@master/put.ts";
+import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v4.1.0/base/kind.ts";
+import { ensure, is } from "https://deno.land/x/unknownutil@v3.18.1/mod.ts";
+import { fn } from "https://deno.land/x/ddu_vim@v4.1.0/deps.ts";
 
 export type ActionData = {
   kind: "commit";

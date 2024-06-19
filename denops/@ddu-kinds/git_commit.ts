@@ -152,7 +152,7 @@ export class Kind extends BaseKind<Params> {
     }
     return Promise.resolve({
       kind: "terminal",
-      cmds: ["git", "-C", action.cwd, "show", action.hash],
+      cmds: ["git", "--no-pager", "-C", action.cwd, "show", action.hash],
     });
   }
 

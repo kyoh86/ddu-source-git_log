@@ -4,14 +4,14 @@ import {
   type Actions,
   BaseKind,
   type Previewer,
-} from "https://deno.land/x/ddu_vim@v4.1.1/types.ts";
+} from "https://deno.land/x/ddu_vim@v4.2.0/types.ts";
 import type { DduItem } from "https://deno.land/x/ddu_vim@v4.1.1/types.ts";
 import { echoallCommand } from "https://denopkg.com/kyoh86/denops-util@master/command.ts";
 import { yank } from "https://denopkg.com/kyoh86/denops-util@master/yank.ts";
 import { put } from "https://denopkg.com/kyoh86/denops-util@master/put.ts";
-import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v4.1.1/base/kind.ts";
+import type { GetPreviewerArguments } from "https://deno.land/x/ddu_vim@v4.2.0/base/kind.ts";
 import { ensure, is } from "https://deno.land/x/unknownutil@v3.18.1/mod.ts";
-import { fn } from "https://deno.land/x/ddu_vim@v4.1.1/deps.ts";
+import { fn } from "https://deno.land/x/ddu_vim@v4.2.0/deps.ts";
 
 export type ActionData = {
   kind: "commit";

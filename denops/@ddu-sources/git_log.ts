@@ -1,12 +1,12 @@
-import type { GatherArguments } from "https://deno.land/x/ddu_vim@v4.1.1/base/source.ts";
-import { fn } from "https://deno.land/x/ddu_vim@v4.1.1/deps.ts";
-import { treePath2Filename } from "https://deno.land/x/ddu_vim@v4.1.1/utils.ts";
-import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v4.1.1/types.ts";
-import { TextLineStream } from "https://deno.land/std@0.224.0/streams/text_line_stream.ts";
-import { ChunkedStream } from "https://deno.land/x/chunked_stream@0.1.4/mod.ts";
+import type { GatherArguments } from "jsr:@shougo/ddu-vim@5.0.0/source";
+import * as fn from "jsr:@denops/std@7.0.1/function";
+import { treePath2Filename } from "jsr:@shougo/ddu-vim@5.0.0/utils";
+import { BaseSource, type Item } from "jsr:@shougo/ddu-vim@5.0.0/types";
+import { TextLineStream } from "jsr:@std/streams@1.0.0";
+import { ChunkedStream } from "jsr:@hibiki/chunked-stream@0.1.4";
 
-import { ActionData } from "../@ddu-kinds/git_commit.ts";
-import { echoerrCommand } from "https://denopkg.com/kyoh86/denops-util@master/command.ts";
+import type { ActionData } from "../@ddu-kinds/git_commit.ts";
+import { echoerrCommand } from "jsr:@kyoh86/denops-util@0.1.0/command";
 
 type Params = {
   cwd?: string;

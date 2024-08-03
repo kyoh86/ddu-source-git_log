@@ -3,15 +3,15 @@ import {
   type Actions,
   BaseKind,
   type Previewer,
-} from "jsr:@shougo/ddu-vim@5.0.0/types";
-import type { DduItem } from "jsr:@shougo/ddu-vim@5.0.0/types";
-import { echoallCommand } from "jsr:@kyoh86/denops-util@0.1.0/command";
-import { yank } from "jsr:@kyoh86/denops-util@0.1.0/yank";
-import { put } from "jsr:@kyoh86/denops-util@0.1.0/put";
-import type { GetPreviewerArguments } from "jsr:@shougo/ddu-vim@5.0.0/kind";
-import { ensure, is } from "jsr:@core/unknownutil@3.18.1";
-import type { Denops } from "jsr:@denops/std@7.0.1";
-import * as fn from "jsr:@denops/std@7.0.1/function";
+} from "jsr:@shougo/ddu-vim@~5.0.0/types";
+import type { DduItem } from "jsr:@shougo/ddu-vim@~5.0.0/types";
+import { echoallCommand } from "jsr:@kyoh86/denops-util@~0.1.0/command";
+import { yank } from "jsr:@kyoh86/denops-util@~0.1.0/yank";
+import { put } from "jsr:@kyoh86/denops-util@~0.1.0/put";
+import type { GetPreviewerArguments } from "jsr:@shougo/ddu-vim@~5.0.0/kind";
+import { ensure, is } from "jsr:@core/unknownutil@~3.18.1";
+import type { Denops } from "jsr:@denops/std@~7.0.1";
+import * as fn from "jsr:@denops/std@~7.0.1/function";
 
 export type ActionData = {
   kind: "commit";

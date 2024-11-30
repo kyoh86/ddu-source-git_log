@@ -1,5 +1,5 @@
 import type { GatherArguments } from "jsr:@shougo/ddu-vim@~7.0.0/source";
-import * as fn from "jsr:@denops/std@~7.3.0/function";
+import * as fn from "jsr:@denops/std@~7.4.0/function";
 import { treePath2Filename } from "jsr:@shougo/ddu-vim@~7.0.0/utils";
 import type { Item } from "jsr:@shougo/ddu-vim@~7.0.0/types";
 import { BaseSource } from "jsr:@shougo/ddu-vim@~7.0.0/source";

@@ -3,11 +3,11 @@ import {
   type Actions,
   type DduItem,
   type Previewer,
-} from "jsr:@shougo/ddu-vim@~9.2.0/types";
+} from "jsr:@shougo/ddu-vim@~9.3.0/types";
 import {
   BaseKind,
   type GetPreviewerArguments,
-} from "jsr:@shougo/ddu-vim@~9.2.0/kind";
+} from "jsr:@shougo/ddu-vim@~9.3.0/kind";
 import { echoallCommand } from "jsr:@kyoh86/denops-util@~0.1.0/command";
 import { yank } from "jsr:@kyoh86/denops-util@~0.1.0/yank";
 import { put } from "jsr:@kyoh86/denops-util@~0.1.0/put";

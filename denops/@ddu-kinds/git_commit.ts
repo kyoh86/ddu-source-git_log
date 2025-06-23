@@ -12,8 +12,8 @@ import { echoallCommand } from "jsr:@kyoh86/denops-util@~0.1.0/command";
 import { yank } from "jsr:@kyoh86/denops-util@~0.1.0/yank";
 import { put } from "jsr:@kyoh86/denops-util@~0.1.0/put";
 import { ensure, is } from "jsr:@core/unknownutil@~4.3.0";
-import type { Denops } from "jsr:@denops/std@~7.5.0";
-import * as fn from "jsr:@denops/std@~7.5.0/function";
+import type { Denops } from "jsr:@denops/std@~7.6.0";
+import * as fn from "jsr:@denops/std@~7.6.0/function";
 
 export type ActionData = {
   kind: "commit";

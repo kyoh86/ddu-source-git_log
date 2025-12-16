@@ -7,7 +7,7 @@
   "lint": { "include": ["denops/**/*.ts", "deno.jsonc"] },
   "test": { "include": ["denops/**/*_test.ts", "deno.jsonc"] },
   "tasks": {
-    "update": "deno run --allow-env --allow-read --allow-write --allow-net --allow-run=git,deno jsr:@molt/cli --write ./denops/**/*.ts",
+    "update": "deno outdated --update",
     "fmt": "deno fmt",
     "check": "deno check ./denops/**/*.ts",
     "lint": "deno lint",

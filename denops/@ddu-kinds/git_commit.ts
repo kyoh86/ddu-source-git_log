@@ -3,17 +3,14 @@ import {
   type Actions,
   type DduItem,
   type Previewer,
-} from "jsr:@shougo/ddu-vim@~11.1.0/types";
-import {
-  BaseKind,
-  type GetPreviewerArguments,
-} from "jsr:@shougo/ddu-vim@~11.1.0/kind";
-import { echoallCommand } from "jsr:@kyoh86/denops-util@~0.1.0/command";
-import { yank } from "jsr:@kyoh86/denops-util@~0.1.0/yank";
-import { put } from "jsr:@kyoh86/denops-util@~0.1.0/put";
-import { ensure, is } from "jsr:@core/unknownutil@~4.3.0";
-import type { Denops } from "jsr:@denops/std@~8.0.0";
-import * as fn from "jsr:@denops/std@~8.0.0/function";
+} from "@shougo/ddu-vim/types";
+import { BaseKind, type GetPreviewerArguments } from "@shougo/ddu-vim/kind";
+import { echoallCommand } from "@kyoh86/denops-util/command";
+import { yank } from "@kyoh86/denops-util/yank";
+import { put } from "@kyoh86/denops-util/put";
+import { ensure, is } from "@core/unknownutil";
+import type { Denops } from "@denops/std";
+import * as fn from "@denops/std/function";
 
 export type ActionData = {
   kind: "commit";

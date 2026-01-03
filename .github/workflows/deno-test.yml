@@ -36,10 +36,10 @@ jobs:
         run: deno fmt --check
 
       - name: Check
-        run: deno task check
+        run: deno check
 
       - name: Run linter
-        run: deno task lint
+        run: deno lint
 
       - name: Get Denops
         run: |

@@ -1,2 +1,4 @@
-doc/tags
 deno.lock
+
+/doc/tags
+/doc/tags-??

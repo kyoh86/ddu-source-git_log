@@ -6,7 +6,7 @@ import { BaseSource } from "@shougo/ddu-vim/source";
 import { TextLineStream } from "@std/streams";
 import { ChunkedStream } from "@hibiki/chunked-stream";
 
-import type { ActionData } from "../@ddu-kinds/git_commit.ts";
+import type { ActionData } from "../../@ddu-kinds/git_commit/main.ts";
 import { echoerrCommand } from "@kyoh86/denops-util/command";
 
 type Params = {

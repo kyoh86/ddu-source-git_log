@@ -1,4 +1,7 @@
 {
+  "exports": {
+    ".": "main.ts"
+  },
   "imports": {
     "@core/unknownutil": "jsr:@core/unknownutil@^4.3.0",
     "@denops/std": "jsr:@denops/std@^8.2.0",
